@@ -5,13 +5,29 @@ h1 {
     text-align: center;
 }
 
-table {
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
+.whiskyTable {
     width: 50%;
     margin: auto;
 }
 
+.middle {
+    display: block;
+    margin: auto;
+}
+
+.right {
+    float: right;
+}
+
+.per30 {
+    width:30%;
+}
+
+.per20 {
+    width:20%;
+}
+
+/*
 td, th {
     border: 1px solid #dddddd;
     text-align: left;
@@ -20,4 +36,4 @@ td, th {
 
 tr:nth-child(even) {
     background-color: #dddddd;
-}
+}*/
