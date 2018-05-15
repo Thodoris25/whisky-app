@@ -18,7 +18,7 @@ router.post('/addWhisky', function(req,res){
     let age = req.body.age;
     let abv = req.body.abv;
 
-    let ageID = null;
+    var ageID = null;
 
     connection.query("SELECT Age_ID FROM age WHERE Age_Value = ?",[age],function(err, rows, fields){
         if(rows.length != 0){
@@ -31,7 +31,7 @@ router.post('/addWhisky', function(req,res){
             });
         }
     });
-
+console.log('Hello')
     connection.query("INSERT INTO product (Prod_Name, Prod_AgeID, Prod_abv) VALUES (?, ?, ?)",[name, ageID, abv],function(err, rows, fields){
         if (err) throw err;
         console.log("1 product record inserted");
