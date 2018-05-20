@@ -12,12 +12,19 @@ class DefaultRow extends React.Component {
             abv: ""
         };
         this.handleClick = this.handleClick.bind(this);
-        this.handleBlur = this.handleBlur.bind(this);  
+        this.handleBlur = this.handleBlur.bind(this);
+        this.resetInputs = this.resetInputs.bind(this);  
     }
 
+    resetInputs() {
+        this.inputName.clear();
+        this.inputAge.clear();
+        this.inputAbv.clear();
+      }
+
     handleClick() {
+        this.resetInputs();
         this.props.addNewRow(this.state);
-        //need to clear state
     }
 
     handleBlur(e) {
@@ -32,9 +39,9 @@ class DefaultRow extends React.Component {
         };
         return (      
                 <tr style={trStyle}>      
-                    <td><InputWithPlaceholder name="name" handleBlur={this.handleBlur} placeholder="Insert name"/></td>
-                    <td><InputWithPlaceholder name="age" handleBlur={this.handleBlur} placeholder="Insert age"/></td>
-                    <td><InputWithPlaceholder name="abv" handleBlur={this.handleBlur} placeholder="Insert abv"/></td>
+                    <td><InputWithPlaceholder ref={inputName => this.inputName = inputName} name="name" handleBlur={this.handleBlur} placeholder="Insert name"/></td>
+                    <td><InputWithPlaceholder ref={inputAge => this.inputAge = inputAge} name="age" handleBlur={this.handleBlur} placeholder="Insert age"/></td>
+                    <td><InputWithPlaceholder ref={inputAbv => this.inputAbv = inputAbv} name="abv" handleBlur={this.handleBlur} placeholder="Insert abv"/></td>
                     <td><div className="right"><Button onClick={this.handleClick} color="success">Add</Button></div></td>
                 </tr>
         )
