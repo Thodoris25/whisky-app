@@ -18,25 +18,43 @@ router.post('/addWhisky', function(req,res){
     let age = req.body.age;
     let abv = req.body.abv;
 
-    var ageID = null;
-
-    connection.query("SELECT Age_ID FROM age WHERE Age_Value = ?",[age],function(err, rows, fields){
-        if(rows.length != 0){
-            ageID = rows[0].Age_ID;
-        }else{
-            connection.query("INSERT INTO age (Age_Value) VALUES (?)",[age],function(err, rows, fields){
-                if (err) throw err;
-                ageID = rows.insertId;
-                console.log("1 age record inserted");
-            });
-        }
-    });
-console.log('Hello')
-    connection.query("INSERT INTO product (Prod_Name, Prod_AgeID, Prod_abv) VALUES (?, ?, ?)",[name, ageID, abv],function(err, rows, fields){
-        if (err) throw err;
-        console.log("1 product record inserted");
-        res.json({'retId' : rows.insertId});
-    });
+    getAgeValue(connection, age)
+    .then(ageID => {
+        return insertProduct(connection, name, ageID, abv);
+    })
+    .then(insertedId => {
+        res.json({"retID" : insertedId});
+    })
+    .catch(function(err){
+        console.log(err);
+    });  
 });
+
+
+const getAgeValue = (connection, age)  => {
+    return new Promise ((resolve, reject) => {
+        connection.query("SELECT Age_ID FROM age WHERE Age_Value = ?",[age],function(err, rows, fields){
+            if (err) reject(err);
+            if(rows.length != 0){
+                resolve(rows[0].Age_ID);
+            }else{
+                connection.query("INSERT INTO age (Age_Value) VALUES (?)",[age],function(errInner, rowsInner, fieldsInner) {
+                    if (errInner) reject(errInner);
+                        resolve(rowsInner.insertId);
+                });
+            }
+        });
+    });
+};
+
+
+const insertProduct = async (connection, name, ageID, abv) => {
+    return new Promise ((resolve, reject) => {
+        connection.query("INSERT INTO product (Prod_Name, Prod_AgeID, Prod_abv) VALUES (?, ?, ?)",[name, ageID, abv],function(err, rows, fields){
+            if (err) reject(err);
+            resolve({'retId' : rows.insertId});
+        });
+    })    
+};
 
 module.exports = router;

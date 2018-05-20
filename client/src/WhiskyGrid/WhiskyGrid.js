@@ -8,7 +8,7 @@ import '.././style.css';
 class WhiskyGrid extends Component {
   state = {whiskies: []}
 
- componentDidMount() {
+  componentDidMount() {
     fetch('/whiskies/getWhiskies')
       .then(res => res.json())
       .then(whiskies => this.setState({ whiskies }));
