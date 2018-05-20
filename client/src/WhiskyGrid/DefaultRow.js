@@ -6,36 +6,32 @@ import InputWithPlaceholder from './InputWithPlaceholder';
 class DefaultRow extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.state =  {
             name: "",
             age: "",
             abv: ""
         };
         this.handleClick = this.handleClick.bind(this);
-        this.handleBlur = this.handleBlur.bind(this);
+        this.handleBlur = this.handleBlur.bind(this);  
     }
 
     handleClick() {
-        fetch('/whiskies/addWhisky', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(this.state)
-        })
-        .then(function(response){
-            console.log(response)
-        })
+        this.props.addNewRow(this.state);
+        //need to clear state
     }
 
     handleBlur(e) {
-        this.setState({[e.target.name]: e.target.value});
+        this.setState(
+            {[e.target.name]: e.target.value}
+        );
     }
     
     render() {
+        const trStyle = {
+            "backgroundColor":"#565555"
+        };
         return (      
-                <tr>      
+                <tr style={trStyle}>      
                     <td><InputWithPlaceholder name="name" handleBlur={this.handleBlur} placeholder="Insert name"/></td>
                     <td><InputWithPlaceholder name="age" handleBlur={this.handleBlur} placeholder="Insert age"/></td>
                     <td><InputWithPlaceholder name="abv" handleBlur={this.handleBlur} placeholder="Insert abv"/></td>

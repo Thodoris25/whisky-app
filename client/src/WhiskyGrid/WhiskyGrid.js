@@ -6,41 +6,89 @@ import '.././style.css';
 
 
 class WhiskyGrid extends Component {
-  state = {whiskies: []}
+    constructor(props){
+        super(props);
+        this.state = {
+            whiskies: []
+        };
+        this.onAdd = this.onAdd.bind(this);
+        this.onRemove = this.onRemove.bind(this);
+    };
+    
+    componentDidMount() {
+        fetch('/whiskies/getWhiskies')
+        .then(res => res.json())
+        .then(whiskies => this.setState({ whiskies }));
+    }
 
-  componentDidMount() {
-    fetch('/whiskies/getWhiskies')
-      .then(res => res.json())
-      .then(whiskies => this.setState({ whiskies }));
-  }
+    onAdd(newRow) {        
+        fetch('/whiskies/addWhisky', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newRow)
+        })
+        .then(() => {
+            fetch('/whiskies/getWhiskies')
+            .then(res => res.json())
+            .then(whiskies => this.setState({ whiskies }));
+        });     
+    }
 
-  render() {
-    return (
-      <div>
-        <div>
-        <h1>My <Badge color="dark">Whiskies</Badge></h1>
-        </div>
-        <div className="whiskyTable">
-            <Table dark>
-                <thead>
-                    <tr>
-                        <th className="per30">Name</th>                    
-                        <th className="per20">Age</th>
-                        <th className="per20">ABV</th>
-                        <th className="per20"></th>  
-                    </tr>            
-                </thead>
-                <tbody>
-                    <WhiskyGridRow
-                        whiskyList={this.state.whiskies}
-                    />
-                    <DefaultRow/>
-                </tbody>
-            </Table>
-        </div>
-      </div>
-    );
-  }
+    onRemove(rowToDelete) {
+        fetch('/whiskies/deleteWhisky', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(rowToDelete)
+        })
+        .then(() => {
+            const arrayCopy = this.state.whiskies.filter((row) => row.Prod_ID !== rowToDelete.rowID);
+            this.setState({whiskies: arrayCopy});
+        });
+    }
+
+    render() {
+        const component = this;
+        return (
+            <div>
+                <div>
+                    <h1>My <Badge color="dark">Whiskies</Badge></h1>
+                </div>
+                <div className="whiskyTable">
+                    <Table dark>
+                        <thead>
+                            <tr>
+                                <th className="per30">Name</th>                    
+                                <th className="per20">Age</th>
+                                <th className="per20">ABV</th>
+                                <th className="per20"></th>  
+                            </tr>            
+                        </thead>
+                        <tbody>
+                            <DefaultRow
+                                key={0}
+                                addNewRow={this.onAdd}
+                            />
+                            {                            
+                                this.state.whiskies.map(whisky =>
+                                    <WhiskyGridRow
+                                        key={whisky.Prod_ID}
+                                        whisky={whisky}
+                                        onRemove={component.onRemove}
+                                    />
+                                )
+                            }                            
+                        </tbody>
+                    </Table>
+                </div>
+            </div>
+        );
+    }
 }
 
 export default WhiskyGrid;

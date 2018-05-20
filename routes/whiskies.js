@@ -31,6 +31,22 @@ router.post('/addWhisky', function(req,res){
 });
 
 
+router.post('/deleteWhisky', function(req,res){
+    let connection = req.db;
+
+    let id = req.body.rowID;
+
+    connection.query("DELETE FROM product WHERE Prod_ID = ?",[id],function(err, result){
+        if (err) throw(err);
+
+        if(result.affectedRows > 0){
+            console.log('Deleted ' + result.affectedRows + ' rows');
+        }
+        res.json({});
+    });
+});
+
+
 const getAgeValue = (connection, age)  => {
     return new Promise ((resolve, reject) => {
         connection.query("SELECT Age_ID FROM age WHERE Age_Value = ?",[age],function(err, rows, fields){
