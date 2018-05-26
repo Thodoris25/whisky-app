@@ -4,7 +4,7 @@ var router = express.Router();
 /* GET home page. */
 router.get('/getWhiskies', function(req, res, next) {
     var connection = req.db;
-    connection.query('SELECT p.Prod_ID, p.Prod_Name, p.Prod_abv, a.Age_Value as Prod_Age FROM product p\
+    connection.query('SELECT p.Prod_ID as id, p.Prod_Name as name, p.Prod_abv as abv, a.Age_Value as age FROM product p\
     INNER JOIN age a ON p.Prod_AgeID = a.Age_ID', function(err, rows, fields) {
         res.json(rows);
     });
