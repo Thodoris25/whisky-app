@@ -25,7 +25,7 @@ class WhiskyGridHeader extends Component {
   render() {
     let iconHTML = "";
     //we check if we have no sorting at all or if we have a sorting and it applies for the current header, else leave iconHTML as is
-    if (this.props.sorting.direction == "neutral" || (this.props.sorting.direction !== "neutral" && this.props.name.toLowerCase() === this.props.sorting.column)) {
+    if (this.props.sorting.direction === "neutral" || (this.props.sorting.direction !== "neutral" && this.props.name.toLowerCase() === this.props.sorting.column)) {
         iconHTML = <FontAwesomeIcon icon={iconComponents[this.props.sorting.direction]} />;    
     }
 

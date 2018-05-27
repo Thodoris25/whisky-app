@@ -42,7 +42,7 @@ class DefaultRow extends React.Component {
                     <td><InputWithPlaceholder ref={inputName => this.inputName = inputName} name="name" handleBlur={this.handleBlur} placeholder="Insert name"/></td>
                     <td><InputWithPlaceholder ref={inputAge => this.inputAge = inputAge} name="age" handleBlur={this.handleBlur} placeholder="Insert age"/></td>
                     <td><InputWithPlaceholder ref={inputAbv => this.inputAbv = inputAbv} name="abv" handleBlur={this.handleBlur} placeholder="Insert abv"/></td>
-                    <td><div className="right"><Button onClick={this.handleClick} color="success">Add</Button></div></td>
+                    <td><div className="right"><Button onClick={this.handleClick} color="success">Add New</Button></div></td>
                 </tr>
         )
     }        

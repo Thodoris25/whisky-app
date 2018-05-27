@@ -4,9 +4,16 @@ var router = express.Router();
 /* GET home page. */
 router.get('/getWhiskies', function(req, res, next) {
     var connection = req.db;
-    connection.query('SELECT p.Prod_ID as id, p.Prod_Name as name, p.Prod_abv as abv, a.Age_Value as age FROM product p\
+    connection.query('SELECT SQL_CALC_FOUND_ROWS p.Prod_ID as id, p.Prod_Name as name, p.Prod_abv as abv, a.Age_Value as age FROM product p\
     INNER JOIN age a ON p.Prod_AgeID = a.Age_ID', function(err, rows, fields) {
-        res.json(rows);
+        if (err) throw (err);
+        connection.query("SELECT FOUND_ROWS() AS totalCount",function(errInner, rowsInner, fieldsInner) {
+            if (errInner) throw (errInner);
+            res.json({
+                whiskies: rows,
+                totalRows: rowsInner[0].totalCount
+            });
+        });
     });
 });
 

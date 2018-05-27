@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import WhiskyGridHeader from './WhiskyGridHeader';
-import { Table, Badge } from 'reactstrap';
+import { Table, Badge, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import '.././style.css';
 import WhiskyGrid from './WhiskyGrid';
 
@@ -13,7 +13,9 @@ class FilterableWhiskyGrid extends Component {
             sorting: {
                 direction : "neutral",
                 column: "id"
-            }
+            },
+            activePage: 1,
+            totalRows: 0
         };
         this.onAdd = this.onAdd.bind(this);
         this.onRemove = this.onRemove.bind(this);
@@ -24,7 +26,7 @@ class FilterableWhiskyGrid extends Component {
     componentDidMount() {
         fetch('/whiskies/getWhiskies')
         .then(res => res.json())
-        .then(whiskies => this.setState({ whiskies }));
+        .then(data => this.setState({ whiskies: data.whiskies, totalRows: data.totalRows }))
     }
 
     onAdd(newRow) {        
@@ -39,7 +41,7 @@ class FilterableWhiskyGrid extends Component {
         .then(() => {
             fetch('/whiskies/getWhiskies')
             .then(res => res.json())
-            .then(whiskies => this.setState({ whiskies }));
+            .then(data => this.setState({ whiskies: data.whiskies, totalRows: data.totalRows }));
         });     
     }
 
@@ -53,7 +55,7 @@ class FilterableWhiskyGrid extends Component {
             body: JSON.stringify(rowToDelete)
         })
         .then(() => {
-            const arrayCopy = this.state.whiskies.filter((row) => row.Prod_ID !== rowToDelete.rowID);
+            const arrayCopy = this.state.whiskies.filter((row) => row.id !== rowToDelete.rowID);
             this.setState({whiskies: arrayCopy});
         });
     }
@@ -102,6 +104,41 @@ class FilterableWhiskyGrid extends Component {
                         <WhiskyGrid whiskies={this.state.whiskies} onAdd={this.onAdd} onRemove={this.onRemove}/>                   
                     </Table>    
                 </div>
+<div>
+                <Pagination aria-label="Page navigation example">
+        <PaginationItem>
+          <PaginationLink previous href="#" />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink href="#">
+            1
+          </PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink href="#">
+            2
+          </PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink href="#">
+            3
+          </PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink href="#">
+            4
+          </PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink href="#">
+            5
+          </PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink next href="#" />
+        </PaginationItem>
+      </Pagination>
+      </div>
             </div>
         )
     }
