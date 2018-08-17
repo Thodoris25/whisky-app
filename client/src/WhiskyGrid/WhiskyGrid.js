@@ -23,10 +23,12 @@ class WhiskyGrid extends Component {
         const component = this;
         return (
                 <tbody>
-                    <DefaultRow
-                        key={0}
-                        addNewRow={this.onAdd}
-                    />
+                    {this.props.filterText !== "" ? null :
+                        <DefaultRow
+                            key={0}
+                            addNewRow={this.onAdd}
+                        />
+                    }
                     {                            
                         this.props.whiskies.map(whisky =>
                             <WhiskyGridRow

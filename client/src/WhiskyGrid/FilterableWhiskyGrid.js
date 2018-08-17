@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import WhiskyGridHeader from './WhiskyGridHeader';
-import { Table, Badge, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
+import { Input, InputGroup, InputGroupButtonDropdown, DropdownItem, DropdownMenu, DropdownToggle, Table, Badge } from 'reactstrap';
 import '.././style.css';
 import WhiskyGrid from './WhiskyGrid';
 
@@ -10,17 +10,25 @@ class FilterableWhiskyGrid extends Component {
         super(props);
         this.state = {
             whiskies: [],
+            filteredWhiskies: [],
             sorting: {
                 direction : "neutral",
                 column: "id"
             },
             activePage: 1,
-            totalRows: 0
+            totalRows: 0,
+            dropdownOpen: false,
+            splitButtonOpen: false,
+            dropdownFilterValue: "Name",
+            filterText: ""
         };
         this.onAdd = this.onAdd.bind(this);
         this.onRemove = this.onRemove.bind(this);
+        this.toggleDropDown = this.toggleDropDown.bind(this);
         this.sortBy = this.sortBy.bind(this);
         this.compareBy = this.compareBy.bind(this);
+        this.changeDropdowndropdownFilterValue = this.changeDropdowndropdownFilterValue.bind(this);
+        this.filterTextChange = this.filterTextChange.bind(this);
     };
 
     componentDidMount() {
@@ -60,6 +68,26 @@ class FilterableWhiskyGrid extends Component {
         });
     }
 
+    toggleDropDown() {
+        this.setState({
+            dropdownOpen: !this.state.dropdownOpen
+        });
+    }
+
+    changeDropdowndropdownFilterValue(e) {
+        this.setState({
+            dropdownOpen: !this.state.dropdownOpen,
+            dropdownFilterValue: e.target.innerText
+        });
+    }
+    
+    filterTextChange(e) {
+        if (e.target.value.trim().length === 0) { this.setState({ filteredWhiskies : [], totalRows: this.state.whiskies.length, filterText: '' }); return; };
+        const currentDropdownVal = this.state.dropdownFilterValue.toLowerCase();
+        const filteredArr = this.state.whiskies.filter(whisky => whisky[currentDropdownVal].toString().toLowerCase().indexOf(e.target.value) !== -1);
+        this.setState({ filteredWhiskies : filteredArr, totalRows : filteredArr.length, filterText: e.target.value });
+    }
+
     compareBy(key, sorting) {
         let multiplier = 1;
 
@@ -86,10 +114,26 @@ class FilterableWhiskyGrid extends Component {
 
 
     render() {
+        const currentTableData = this.state.filterText !== '' ? this.state.filteredWhiskies : this.state.whiskies;
         return (
             <div>
                 <div>
                     <h1>My <Badge color="dark">Whiskies</Badge></h1>
+                </div>
+                <div className="searchFilter">
+                    <InputGroup>
+                        <Input placeholder="Search by..." onChange={this.filterTextChange}/>
+                        <InputGroupButtonDropdown addonType="append" isOpen={this.state.dropdownOpen} toggle={this.toggleDropDown}>
+                            <DropdownToggle caret>
+                                {this.state.dropdownFilterValue}
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem onClick={this.changeDropdowndropdownFilterValue}>Name</DropdownItem>
+                                <DropdownItem onClick={this.changeDropdowndropdownFilterValue}>Age</DropdownItem>
+                                <DropdownItem onClick={this.changeDropdowndropdownFilterValue}>ABV</DropdownItem>
+                            </DropdownMenu>
+                        </InputGroupButtonDropdown>
+                    </InputGroup>
                 </div>
                 <div className="whiskyTable">
                     <Table dark>
@@ -101,44 +145,9 @@ class FilterableWhiskyGrid extends Component {
                                 <th className="per20"></th>  
                             </tr>            
                         </thead>
-                        <WhiskyGrid whiskies={this.state.whiskies} onAdd={this.onAdd} onRemove={this.onRemove}/>                   
+                        <WhiskyGrid whiskies={currentTableData} filterText={this.state.filterText} onAdd={this.onAdd} onRemove={this.onRemove}/>                   
                     </Table>    
                 </div>
-<div>
-                <Pagination aria-label="Page navigation example">
-        <PaginationItem>
-          <PaginationLink previous href="#" />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">
-            1
-          </PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">
-            2
-          </PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">
-            3
-          </PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">
-            4
-          </PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">
-            5
-          </PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink next href="#" />
-        </PaginationItem>
-      </Pagination>
-      </div>
             </div>
         )
     }
